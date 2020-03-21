@@ -7,39 +7,63 @@ import(
 )
 
 func main() {
-	namespace, action, args, _ := parseInput(os.Args[1:])
+	namespace, action, args, err := parseInput(os.Args[1:])
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 	orderedArgs, flagArgs := parseArgs(args)
 
 	fmt.Println("NAMESPACE: " + namespace)
 	fmt.Println("ACTION: " + action)
 	fmt.Println(fmt.Sprintf("ARGS: %v", orderedArgs))
 	for k, v := range(flagArgs) {
-		fmt.Println(fmt.Sprintf(" -%v: %v", k, v))
+		fmt.Println(fmt.Sprintf("  %v: %v", k, v))
 	}
 }
 
+// A struct used to handle all error messages for when the program does not understand the user's
+// command input
 type IllegalInput struct {
 	error string
 }
 
-func (i* IllegalInput) Error() string {
+// Error returns a string containing the error message contained in the IllegalInput struct
+func (i IllegalInput) Error() string {
 	return i.error
 }
 
-func newIllegalInput() IllegalInput {
+// emptyInputError returns an instance of the IllegalInput struct with an error message indicating
+// that no command has been given.
+func emptyInputError() IllegalInput {
 	return IllegalInput{
-		error: "IllegalInput Detected",
+		error: "Error parsing command: no command given. Type 'zebu help' to see a list of commands.",
 	}
 }
 
+// parseInput takes a slice of command line arguments that can be retrieved from os.Args. Note that
+// this slice is not meant to include os.Args[0] which is the command used to execute the code, so
+// this function should usually be called by: "parseInput[1:]". 
+//
+// parseInput expects the user to enter their command in the format: "[namespace]:[action] [args...]"
+// where namespace indicates where zebu should look for the action, action specifies what zebu should
+// do, and args is a list of arguments to provide any additional information. args should then be 
+// passed into the parseArgs function so all the arguments are divided by arguments with flags and 
+// arguments without flags. 
 func parseInput(input []string) (namespace string, action string, args []string, err error) {
+	if len(input) == 0 {
+		err = emptyInputError()
+		return 
+	}
+
 	commandArr := strings.Split(input[0], ":")
 	if len(commandArr) > 1 {
 		namespace, action = commandArr[0], commandArr[1]
 	} else {
-		namespace, action = commandArr[1], "default"
+		namespace, action = commandArr[0], "default"
 	}
 	args = input[1:]
+
 	return
 }
 
