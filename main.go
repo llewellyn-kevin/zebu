@@ -22,7 +22,27 @@ func main() {
 		namespace, action = commandArr[1], commandArr[1]
 	}
 
+	orderedArgs, flagArgs := parseArgs(args)
+
 	fmt.Println("NAMESPACE: " + namespace)
 	fmt.Println("ACTION: " + action)
-	fmt.Println(fmt.Sprintf("ARGS: %v", args))
+	fmt.Println(fmt.Sprintf("ARGS: %v", orderedArgs))
+	for k, v := range(flagArgs) {
+		fmt.Println(fmt.Sprintf(" -%v: %v", k, v))
+	}
+}
+
+func parseArgs(args []string) (orderedArgs []string, flagArgs map[string]string) {
+	flagArgs = make(map[string]string)
+
+	for i := 0; i < len(args); i++ {
+		if strings.Index(args[i], "-") == 0 {
+			flagArgs[args[i]] = args[i+1]
+			i = i + 1
+		} else {
+			orderedArgs = append(orderedArgs, args[i])
+		}
+	}
+
+	return
 }
