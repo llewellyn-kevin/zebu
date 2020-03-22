@@ -33,7 +33,7 @@ func (i IllegalInput) Error() string {
 	return i.error
 }
 
-// emptyInputError returns an instance of the IllegalInput struct with an error message indicating
+// EmptyInputError returns an instance of the IllegalInput struct with an error message indicating
 // that no command has been given.
 func emptyInputError() IllegalInput {
 	return IllegalInput{
