@@ -33,11 +33,27 @@ func (i IllegalInput) Error() string {
 	return i.error
 }
 
-// EmptyInputError returns an instance of the IllegalInput struct with an error message indicating
+// emptyInputError returns an instance of the IllegalInput struct with an error message indicating
 // that no command has been given.
 func emptyInputError() IllegalInput {
 	return IllegalInput{
 		error: "Error parsing command: no command given. Type 'zebu help' to see a list of commands.",
+	}
+}
+
+// emptyNamespaceError returns an instance of the IllegalInput struct with an error message indicating
+// that no namespace was given before the `:` in the command
+func emptyNamespaceError() IllegalInput {
+	return IllegalInput{
+		error: "Error parsing command: no namespace provided. If a command has a `:`, please ensure it is preceded by a namespace.",
+	}
+}
+
+// emptyNamespaceError returns an instance of the IllegalInput struct with an error message indicating
+// that no command was given after the `:` in the command
+func emptyActionError() IllegalInput {
+	return IllegalInput{
+		error: "Error parsing command: no command provided. If a command has a `:`, please ensure it is followed by a command.",
 	}
 }
 
@@ -51,17 +67,28 @@ func emptyInputError() IllegalInput {
 // passed into the parseArgs function so all the arguments are divided by arguments with flags and 
 // arguments without flags. 
 func parseInput(input []string) (namespace string, action string, args []string, err error) {
+	// Check that the input has at list one field
 	if len(input) == 0 {
 		err = emptyInputError()
 		return 
 	}
 
+	// Parse first field into namespace and action
 	commandArr := strings.Split(input[0], ":")
 	if len(commandArr) > 1 {
 		namespace, action = commandArr[0], commandArr[1]
 	} else {
 		namespace, action = commandArr[0], "default"
 	}
+
+	// Check that if colon is present, both a namespace and action are present
+	if namespace == "" {
+		err = emptyNamespaceError()
+	} else if action == "" {
+		err = emptyActionError()
+	}
+
+	// Put the remainder of the fields into args
 	args = input[1:]
 
 	return

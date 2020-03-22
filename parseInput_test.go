@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 type ParseInputResult struct {
 	namespace	string
@@ -14,13 +17,29 @@ func TestParseInput(t *testing.T) {
 		input			[]string
 		expectedOutput	ParseInputResult
 	}{
-		{
-			[]string{}, 
+		{ // test no input
+			nil, 
 			ParseInputResult{"", "", nil, emptyInputError()},
 		},
-		{
-			[]string{"make:model", "User"},
-			ParseInputResult{"make", "model", []string{"User"}, nil},
+		{ // test empty namespace
+			makeArray(":seed"), 
+			ParseInputResult{"", "seed", nil, emptyNamespaceError()},
+		},
+		{ // test empty command
+			makeArray("db: FakeUsers"),
+			ParseInputResult{"db", "", []string{"FakeUsers"}, emptyActionError()},
+		},
+		{ // test valid namespace only
+			makeArray("init"),
+			ParseInputResult{"init", "default", nil, nil},
+		}, 
+		{ // test valid namespace and args only
+			makeArray("init some args"),
+			ParseInputResult{"init", "default", []string{"some", "args"}, nil},
+		},
+		{ // test full valid command
+			makeArray("make:controller User -c crud"),
+			ParseInputResult{"make", "controller", []string{"User", "-c", "crud"}, nil},
 		},
 	}
 
@@ -71,4 +90,8 @@ func isSliceEqual(a, b []string) bool {
         }
     }
     return true
+}
+
+func makeArray(s string) []string {
+	return strings.Split(s, " ")
 }
