@@ -92,6 +92,7 @@ func isSliceEqual(a, b []string) bool {
     return true
 }
 
+// makeArray translates a string that represents user input and converts it into a slice
 func makeArray(s string) []string {
 	return strings.Split(s, " ")
 }
