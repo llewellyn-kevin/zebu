@@ -7,19 +7,29 @@ import(
 )
 
 func main() {
-	namespace, action, args, err := parseInput(os.Args[1:])
+	namespaceName, actionName, args, err := parseInput(os.Args[1:])
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		panic(err)
 	}
-	orderedArgs, flagArgs := parseArgs(args)
 
-	fmt.Println("NAMESPACE: " + namespace)
-	fmt.Println("ACTION: " + action)
-	fmt.Println(fmt.Sprintf("ARGS: %v", orderedArgs))
-	for k, v := range(flagArgs) {
-		fmt.Println(fmt.Sprintf("  %v: %v", k, v))
+	manifest, err := GetManifest("manifest.json")
+	if err != nil {
+		panic(err)
 	}
+
+	namespace, err := manifest.FindNamespace(namespaceName)
+	if err != nil {
+		panic(err)
+	}
+
+	action, err := namespace.FindAction(actionName)
+	if err != nil {
+		panic(err)
+	}
+
+	command := AddArgs(action, args)
+
+	fmt.Println(command)
 }
 
 // A struct used to handle all error messages for when the program does not understand the user's
@@ -42,7 +52,7 @@ func emptyInputError() IllegalInput {
 }
 
 // emptyNamespaceError returns an instance of the IllegalInput struct with an error message indicating
-// that no namespace was given before the `:` in the command
+// that no namespace was given before the `:` in the command.
 func emptyNamespaceError() IllegalInput {
 	return IllegalInput{
 		error: "Error parsing command: no namespace provided. If a command has a `:`, please ensure it is preceded by a namespace.",
@@ -50,10 +60,26 @@ func emptyNamespaceError() IllegalInput {
 }
 
 // emptyActionError returns an instance of the IllegalInput struct with an error message indicating
-// that no command was given after the `:` in the command
+// that no command was given after the `:` in the command.
 func emptyActionError() IllegalInput {
 	return IllegalInput{
 		error: "Error parsing command: no command provided. If a command has a `:`, please ensure it is followed by a command.",
+	}
+}
+
+// NoSuchNamespaceError returns an instance of the IllegalInput struct with an error message indicating
+// that no namespace with the given name was found.
+func NoSuchNamespaceError(namespace string) IllegalInput {
+	return IllegalInput{
+		error: fmt.Sprintf("Error parsing command: no namespace with identifier `%v` found in manifest", namespace),
+	}
+}
+
+// NoSuchNameActionError returns an instance of the IllegalInput struct with an error message indicating
+// that no action with the given name was found in the given namespace.
+func NoSuchActionError(action, namespace string) IllegalInput {
+	return IllegalInput{
+		error: fmt.Sprintf("Error parsing command: no action with identifier `%v` found in namespace `%v`", action, namespace),
 	}
 }
 
@@ -99,7 +125,7 @@ func parseInput(input []string) (namespace string, action string, args []string,
 // as a flag, and add this argument to the flagArgs map with a key for whatever follows 
 // the hyphen and value being the next argument in the slice. Any other argument is 
 // appended to the orderedArgs slice.
-func parseArgs(args []string) (orderedArgs []string, flagArgs map[string]string) {
+func ParseArgs(args []string) (orderedArgs []string, flagArgs map[string]string) {
 	flagArgs = make(map[string]string)
 
 	for i := 0; i < len(args); i++ {
