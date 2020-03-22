@@ -49,7 +49,7 @@ func emptyNamespaceError() IllegalInput {
 	}
 }
 
-// emptyNamespaceError returns an instance of the IllegalInput struct with an error message indicating
+// emptyActionError returns an instance of the IllegalInput struct with an error message indicating
 // that no command was given after the `:` in the command
 func emptyActionError() IllegalInput {
 	return IllegalInput{
