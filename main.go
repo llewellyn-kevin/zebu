@@ -12,7 +12,7 @@ func main() {
 		panic(err)
 	}
 
-	manifest, err := GetManifest("manifest.json")
+	manifest, err := GetManifest("./manifest.json")
 	if err != nil {
 		panic(err)
 	}
@@ -32,7 +32,7 @@ func main() {
 	fmt.Println(command)
 }
 
-// A struct used to handle all error messages for when the program does not understand the user's
+// IllegalInput is a struct used to handle all error messages for when the program does not understand the user's
 // command input
 type IllegalInput struct {
 	error string
@@ -75,7 +75,7 @@ func NoSuchNamespaceError(namespace string) IllegalInput {
 	}
 }
 
-// NoSuchNameActionError returns an instance of the IllegalInput struct with an error message indicating
+// NoSuchActionError returns an instance of the IllegalInput struct with an error message indicating
 // that no action with the given name was found in the given namespace.
 func NoSuchActionError(action, namespace string) IllegalInput {
 	return IllegalInput{
@@ -120,7 +120,7 @@ func parseInput(input []string) (namespace string, action string, args []string,
 	return
 }
 
-// parseArgs takes a slice of arguments and iterates through them to seperate them into 
+// ParseArgs takes a slice of arguments and iterates through them to seperate them into 
 // a two seperate data structures. Any argument that begins with a '-' will be treated
 // as a flag, and add this argument to the flagArgs map with a key for whatever follows 
 // the hyphen and value being the next argument in the slice. Any other argument is 

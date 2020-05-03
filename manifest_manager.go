@@ -62,7 +62,7 @@ func (n Namespace) FindAction(name string) (string, error) {
 	return "", NoSuchActionError(name, n.Name)
 }
 
-// Add args takes an action string and appends an array of args, so args can be passed 
+// AddArgs takes an action string and appends an array of args, so args can be passed 
 // from the args zebu recieved
 func AddArgs(action string, args []string) (command string) {
 	command = action
