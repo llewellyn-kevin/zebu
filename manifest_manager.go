@@ -7,7 +7,7 @@ import (
 
 // Manifest is a type used to hold a manifest file in memory.
 type Manifest struct {
-	buffer 		[]byte
+	buffer	    []byte
 	Namespaces	Namespaces
 }
 
@@ -18,14 +18,14 @@ type Namespaces struct {
 
 // Namespace is each element in the Namespaces array.
 type Namespace struct {
-	Name 	string 		`json:"name"`
-	Actions []Action 	`json:"actions"`
+	Name	  string		`json:"name"`
+	Actions []Action	`json:"actions"`
 }
 
 // Action is each action is the Action array in the Namespace model.
 type Action struct {
-	Name 	string `json:"name"`
-	Action 	string `json:"action"`
+	Name	  string `json:"name"`
+	Action	string `json:"action"`
 }
 
 // GetManifest returns a new instance of Manifest struct with the contents of the given

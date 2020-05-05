@@ -1,30 +1,30 @@
 {
-    "namespaces": [
+  "namespaces": [
+    {
+      "name": "make",
+      "actions": [
         {
-            "name": "make",
-            "actions": [
-                {
-                    "name": "default",
-                    "action": "echo $GOPATH"
-                },
-                {
-                    "name": "model",
-                    "action": "model make action"
-                }
-            ]
+          "name": "default",
+          "action": "echo $GOPATH"
         },
         {
-            "name": "db",
-            "actions": [
-                {
-                    "name": "default",
-                    "action": "default db action"
-                },
-                {
-                    "name": "seed",
-                    "action": "seed db action"
-                }
-            ]
+          "name": "model",
+          "action": "model make action"
         }
-    ]
+      ]
+    },
+    {
+      "name": "db",
+      "actions": [
+        {
+          "name": "default",
+          "action": "default db action"
+        },
+        {
+          "name": "seed",
+          "action": "seed db action"
+        }
+      ]
+    }
+  ]
 }
