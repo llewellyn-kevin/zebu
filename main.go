@@ -3,6 +3,7 @@ package main
 import(
 	"fmt"
 	"os"
+  "os/exec"
 	"strings"
 )
 
@@ -27,9 +28,12 @@ func main() {
 		panic(err)
 	}
 
-	command := AddArgs(action, args)
-
-	fmt.Println(command)
+	command := exec.Command(action, args...)
+  output, err := command.Output()
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(string(output))
 }
 
 // IllegalInput is a struct used to handle all error messages for when the program does not understand the user's

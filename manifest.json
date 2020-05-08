@@ -9,7 +9,7 @@
         },
         {
           "name": "model",
-          "action": "model make action"
+          "action": "ls"
         }
       ]
     },
@@ -18,11 +18,11 @@
       "actions": [
         {
           "name": "default",
-          "action": "default db action"
+          "action": "ls"
         },
         {
           "name": "seed",
-          "action": "seed db action"
+          "action": "ls"
         }
       ]
     }

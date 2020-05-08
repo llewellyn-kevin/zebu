@@ -30,10 +30,10 @@ type Action struct {
 
 // GetManifest returns a new instance of Manifest struct with the contents of the given
 // json file unmarshelled into Namespaces.
-func GetManifest(file string) (new Manifest, err error) {
-	new.buffer, err = ioutil.ReadFile(file)
+func GetManifest(file string) (man Manifest, err error) {
+	man.buffer, err = ioutil.ReadFile(file)
 	if err == nil {
-		err = json.Unmarshal(new.buffer, &new.Namespaces)
+		err = json.Unmarshal(man.buffer, &man.Namespaces)
 	}
 	return
 }
